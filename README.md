@@ -2,11 +2,6 @@
 [![Version](https://img.shields.io/packagist/v/friendsofsylius/sylius-import-export-plugin.svg)](https://packagist.org/packages/friendsofsylius/sylius-import-export-plugin)
 [![Build](https://github.com/FriendsOfSylius/SyliusImportExportPlugin/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/FriendsOfSylius/SyliusImportExportPlugin/actions/workflows/build.yml)
 
-<p align="center">
-    <a href="http://sylius.org" target="_blank">
-        <img src="https://demo.sylius.com/assets/shop/img/logo.png" />
-    </a>
-</p>
 <h1 align="center">SoftylinesSyliusImportExportPlugin</h1>
 
 <p align="center"><a href="https://www.softylines.com/" target="_blank"><img src="softylines.png" width="140"></a></p>
