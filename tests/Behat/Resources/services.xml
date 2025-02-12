@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="behat.files_directory">tests/Behat/Resources/fixtures</parameter>
+    </parameters>
+    <services>
+        <defaults public="true" />
+
+        <service id="test.behat.context.notification_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\NotificationContext">
+            <argument type="service" id="sylius.behat.notification_checker"/>
+        </service>
+
+        <service id="test.behat.context.countries_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CountriesContext">
+            <argument type="service" id="test.behat.page.country_index_page"/>
+            <argument type="service" id="sylius.behat.context.transform.country"/>
+            <argument type="service" id="behat.mink.default_session" />
+            <argument type="service" id="behat.mink.parameters" />
+            <argument type="service" id="router" />
+        </service>
+        <service id="test.behat.context.customer_groups_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CustomerGroupsContext">
+            <argument type="service" id="test.behat.page.customer_group_index_page"/>
+        </service>
+
+        <service id="test.behat.context.payment_methods_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\PaymentMethodsContext">
+            <argument type="service" id="test.behat.page.payment_method_index_page"/>
+        </service>
+        <service id="test.behat.context.tax_categories_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\TaxCategoriesContext">
+            <argument type="service" id="test.behat.page.tax_category_index_page" />
+        </service>
+        <service id="test.behat.context.products_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\ProductsContext">
+            <argument type="service" id="test.behat.page.product_index_page"/>
+            <argument type="service" id="sylius.behat.context.transform.product"/>
+            <argument type="service" id="behat.mink.default_session" />
+            <argument type="service" id="behat.mink.parameters" />
+            <argument type="service" id="router" />
+        </service>
+
+        <service id="test.behat.context.cli_base_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliBaseContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.product" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.taxonomies_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\TaxonomiesContext">
+            <argument type="service" id="test.behat.page.taxonomy_create_page" />
+        </service>
+        <service id="test.behat.context.cli_countries_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliCountriesContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.country" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.cli_customer_groups_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliCustomerGroupsContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.customer_group" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.cli_tax_categories_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliTaxCategoriesContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.tax_category" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.cli_payment_methods_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliPaymentMethodsContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.payment_method" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.cli_orders_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliOrdersContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.payment_method" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.cli_customers_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliCustomersContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.customer" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.cli_products_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliProductsContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.product" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.context.cli_taxonomies_context" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Context\CliTaxonomiesContext">
+            <argument type="service" id="kernel" />
+            <argument type="service" id="sylius.repository.taxon" />
+            <argument type="service" id="sylius.importers_registry" />
+            <argument type="service" id="sylius.exporters_registry" />
+            <argument type="service" id="service_container" />
+            <argument>%behat.files_directory%</argument>
+        </service>
+
+        <service id="test.behat.page.country_index_page" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Page\ResourceIndexPage" parent="sylius.behat.page.admin.crud.index" public="false">
+            <argument>sylius_admin_country_index</argument>
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.page.customer_group_index_page" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Page\ResourceIndexPage" parent="sylius.behat.page.admin.crud.index" public="false">
+            <argument>sylius_admin_customer_group_index</argument>
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.page.tax_category_index_page" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Page\ResourceIndexPage" parent="sylius.behat.page.admin.crud.index" public="false">
+            <argument>sylius_admin_tax_category_index</argument>
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.page.payment_method_index_page" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Page\ResourceIndexPage" parent="sylius.behat.page.admin.crud.index" public="false">
+            <argument>sylius_admin_payment_method_index</argument>
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.page.product_index_page" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Page\ResourceIndexPage" parent="sylius.behat.page.admin.crud.index" public="false">
+            <argument>sylius_admin_product_index</argument>
+            <argument>%behat.files_directory%</argument>
+        </service>
+        <service id="test.behat.page.taxonomy_create_page" class="Tests\FriendsOfSylius\SyliusImportExportPlugin\Behat\Page\TaxonCreatePage" parent="sylius.behat.page.admin.crud.create" public="false">
+            <argument>sylius_admin_taxon_create</argument>
+            <argument>%behat.files_directory%</argument>
+        </service>
+    </services>
+</container>

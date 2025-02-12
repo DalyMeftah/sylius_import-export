@@ -1,0 +1,86 @@
+## Import route
+app_import_data:
+  path: /import/{resource}
+  methods: [POST]
+  defaults:
+    _controller: sylius.controller.import_data::importAction
+
+## Export routes for specific settings
+app_export_data_country:
+  path: /export/sylius.country/{format}
+  methods: [GET]
+  defaults:
+    resource: sylius.country
+    _controller: sylius.controller.export_data_country::exportAction
+    _sylius:
+      filterable: true
+      grid: sylius_admin_country
+
+app_export_data_order:
+  path: /export/sylius.order/{format}
+  methods: [GET]
+  defaults:
+    resource: sylius.order
+    _controller: sylius.controller.export_data_order::exportAction
+    _sylius:
+      filterable: true
+      grid: sylius_admin_order
+
+app_export_data_customer:
+  path: /export/sylius.customer/{format}
+  methods: [GET]
+  defaults:
+    resource: sylius.customer
+    _controller: sylius.controller.export_data_customer::exportAction
+    _sylius:
+      filterable: true
+      grid: sylius_admin_customer
+
+app_export_data_product:
+  path: /export/sylius.product/{format}
+  methods: [GET]
+  defaults:
+    resource: sylius.product
+    _controller: sylius.controller.export_data_product::exportAction
+    _sylius:
+      filterable: true
+      grid: sylius_admin_product
+
+app_export_data_product_option:
+  path: /admin/export/product-options/{format}
+  methods: [GET]
+  defaults:
+    resource: sylius.product_option
+    _controller: sylius.controller.export_data_product_option::exportAction
+    _sylius:
+      filterable: true
+      grid: sylius_admin_product_option
+
+app_export_data_product_attribute:
+  path: /admin/export/product-attributes/{format}
+  methods: [GET]
+  defaults:
+    resource: sylius.product_attribute
+    _controller: sylius.controller.export_data_product_attribute::exportAction
+    _sylius:
+      filterable: true
+      grid: sylius_admin_product_attribute
+
+app_export_data_taxonomy:
+  path: /admin/export/taxonomy/{format}
+  methods: [GET]
+  defaults:
+    resource: sylius.taxon
+    _controller: sylius.controller.export_data_taxonomy::exportAction
+    _sylius:
+      filterable: true
+      grid: sylius_admin_taxon
+app_export_data_vendor:
+  path: /admin/export/open_marketplace.vendor/{format}
+  methods: [GET]
+  defaults:
+    resource: open_marketplace.vendor
+    _controller: sylius.controller.export_data_vendor::exportAction
+    _sylius:
+      filterable: true
+      grid: open_marketplace_admin_vendor

@@ -1,0 +1,161 @@
+services:
+  sylius.csv_writer:
+    class: Port\Csv\CsvWriter
+    arguments:
+      - ';'
+
+  sylius.exporter.csv_writer:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Writer\CsvWriter
+    arguments:
+      - '@sylius.csv_writer'
+
+  # CSV-Exporters
+  sylius.exporter.countries.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.countries'
+      - ['Id', 'Code', 'Enabled']
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: sylius.country, format: csv }
+
+  sylius.exporter.orders.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.orders'
+      - [
+          'Number',
+          'State',
+          'Product_list',
+          'Total',
+          'Currency_code',
+          'Checkout_completed_at',
+          'Checkout_state',
+          'Payment_state',
+          'Shipping_state',
+          'Token_value',
+          'Gender',
+          'Full_name',
+          'Email',
+          'Telephone',
+          'Shipping_address',
+          'Billing_address',
+          'Customer_ip',
+          'Notes',
+        ]
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: sylius.order, format: csv }
+
+  sylius.exporter.tax_categories.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.tax_categories'
+      - ['Id', 'Code', 'Name', 'Description']
+      - '@sylius.exporters_transformer_pool' # Optional
+    tags:
+      - { name: sylius.exporter, type: sylius.tax_category, format: csv }
+
+  sylius.exporter.customers.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.customers'
+      - [
+          'Email',
+          'Email_canonical',
+          'First_name',
+          'Last_name',
+          'Birthday',
+          'Gender',
+          'Phone_number',
+          'Subscribed_to_newsletter',
+        ]
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: sylius.customer, format: csv }
+
+  sylius.exporter.products.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ProductResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.products'
+      - [
+          'Code',
+          'Locale',
+          'Name',
+          'Description',
+          'Short_description',
+          'Meta_description',
+          'Meta_keywords',
+          'Main_taxon',
+          'Taxons',
+          'Channels',
+          'Enabled',
+          'Price',
+        ]
+      - '@sylius.service.attributes_code'
+      - '@sylius.service.product_image_code'
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: sylius.product, format: csv }
+
+  sylius.exporter.product_options.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.product_options'
+      - ['Code', 'Name', 'Position', 'Values']
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: sylius.product_option, format: csv }
+
+  sylius.exporter.product_attributes.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.product_attributes'
+      - ['Code', 'Name', 'Type', 'Position', 'Translatable']
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: sylius.product_attribute, format: csv }
+
+  # Plugin Pool for taxons
+  sylius.exporter.pluginpool.taxons:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\PluginPool
+    arguments:
+      - ['@sylius.exporter.plugin.taxon.resource']
+      - ['Code', 'Parent', 'Name', 'Slug', 'Description', 'Position', 'Locale']
+
+  # Taxon exporter service
+  sylius.exporter.taxonomy.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.taxons'
+      - ['Code', 'Parent', 'Name', 'Slug', 'Description', 'Position', 'Locale']
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: sylius.taxon, format: csv }
+
+  # Taxon resource plugin
+  sylius.exporter.plugin.taxon.resource:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\TaxonResourcePlugin
+    arguments:
+      - '@sylius.repository.taxon'
+      - '@property_accessor'
+      - '@doctrine.orm.entity_manager'
+    tags:
+      - { name: sylius.exporter.plugin, type: sylius.taxon }
+  sylius.exporter.vendors.csv:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\ResourceExporter
+    arguments:
+      - '@sylius.exporter.csv_writer'
+      - '@sylius.exporter.pluginpool.vendors'
+      - ['Id', 'Company_name', 'Tax_ID', 'Status', 'Enabled']
+      - '@sylius.exporters_transformer_pool'
+    tags:
+      - { name: sylius.exporter, type: open_marketplace.vendor, format: csv }

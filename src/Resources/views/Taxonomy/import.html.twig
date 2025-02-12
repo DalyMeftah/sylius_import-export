@@ -1,0 +1,10 @@
+{{ render(controller('sylius.controller.import_data::importFormAction', {'resource': 'taxonomy'})) }}
+
+<div class="ui basic segment">
+    <div class="ui buttons">
+        <a class="ui basic blue button" href="{{ path('app_export_data_taxonomy', {'format': 'csv'}) }}">
+            <i class="file excel icon"></i>
+            {{ 'export'|trans }}
+        </a>
+    </div>
+</div>
