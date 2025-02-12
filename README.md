@@ -35,6 +35,7 @@ return [
 ### Application configuration:
 
 /config/packages/sylius_grid.yaml
+
 ```yaml
 sylius_grid:
   templates:
@@ -83,7 +84,17 @@ sylius_grid:
                 parameters:
                   format: csv
 ```
+try to create templates/bundles/SyliusAdminBundle/Grid/Action/export.html.twig
+````twig
+{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
 
+{% if options.link.route is defined %}
+    {% set path = options.link.route %}
+    {% set parameters = options.link.parameters|default({}) %}
+
+    {{ buttons.default(path(path, parameters), action.label, null, 'download', 'blue') }}
+{% endif %}
+```
 ```yaml
 # config/packages/fos_sylius_import_export.yaml
 
@@ -534,3 +545,4 @@ With the provided keys you can influence which fields of a resource are exported
 
 Fixture file with login information:
 https://github.com/Sylius/Sylius/blob/master/src/Sylius/Bundle/CoreBundle/Resources/config/app/fixtures.yml
+````
