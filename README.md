@@ -34,6 +34,56 @@ return [
 
 ### Application configuration:
 
+/config/packages/sylius_grid.yaml
+```yaml
+sylius_grid:
+  templates:
+    action:
+      export: '@SyliusAdmin/Grid/Action/export.html.twig'
+  grids:
+    open_marketplace_admin_vendor:
+      driver:
+        name: doctrine/orm
+        options:
+          class: '%open_marketplace.model.vendor.class%'
+      sorting:
+        id: asc
+      fields:
+        id:
+          type: string
+          label: open_marketplace.ui.id
+          sortable: ~
+        companyName:
+          type: string
+          label: open_marketplace.ui.company_name
+          sortable: ~
+        taxIdentifier:
+          type: string
+          label: open_marketplace.ui.tax_id
+          sortable: ~
+        status:
+          type: twig
+          label: open_marketplace.ui.status
+          options:
+            template: 'Configuration/Grid/Admin/Field/status.html.twig'
+          sortable: ~
+        enabled:
+          type: twig
+          label: open_marketplace.ui.enabled
+          options:
+            template: 'Configuration/Grid/Admin/Field/enabled.html.twig'
+      actions:
+        main:
+          export:
+            type: export
+            label: sylius.ui.export
+            options:
+              link:
+                route: app_export_data_vendor
+                parameters:
+                  format: csv
+```
+
 ```yaml
 # config/packages/fos_sylius_import_export.yaml
 
