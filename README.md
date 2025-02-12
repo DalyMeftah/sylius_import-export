@@ -9,9 +9,7 @@
 </p>
 <h1 align="center">SoftylinesSyliusImportExportPlugin</h1>
 
-<p align="center">
-    <a href="https://sylius.com/plugins/" target="_blank"><img src="https://sylius.com/assets/badge-approved-by-sylius.png" width="200"></a>
-</p>
+<p align="center"><a href="https://www.softylines.com/" target="_blank"><img src="softylines.png" width="140"></a></p>
 
 ## Installation
 
