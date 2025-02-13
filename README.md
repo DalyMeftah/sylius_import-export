@@ -84,8 +84,10 @@ sylius_grid:
                 parameters:
                   format: csv
 ```
-try to create templates/bundles/SyliusAdminBundle/Grid/Action/export.html.twig
-````twig
+
+### try to create templates/bundles/SyliusAdminBundle/Grid/Action/export.html.twig
+
+```twig
 {% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
 
 {% if options.link.route is defined %}
@@ -95,6 +97,7 @@ try to create templates/bundles/SyliusAdminBundle/Grid/Action/export.html.twig
     {{ buttons.default(path(path, parameters), action.label, null, 'download', 'blue') }}
 {% endif %}
 ```
+
 ```yaml
 # config/packages/fos_sylius_import_export.yaml
 
@@ -151,6 +154,9 @@ fos_sylius_import_export:
 
 - country (csv, excel, json)
 - customer_group (csv, excel, json)
+- product_options (csv, json)
+- product_attributes (csv, json)
+- vendors (csv, json)
 - payment_method (csv, excel, json)
 - tax_category (csv, excel, json)
 - customer (json)
@@ -159,6 +165,9 @@ fos_sylius_import_export:
 ### Available exporter types
 
 - country (csv, excel, json)
+- product_options (csv, json)
+- product_attributes (csv, json)
+- vendors (csv, json)
 - order (csv, excel, json)
 - customer (csv, excel, json)
 - product (csv)
@@ -176,27 +185,39 @@ admin overview panel using the event hook system, ie. `admin/tax-categories/`.
 
 - Get list of available importers
 
-      $ bin/console sylius:import
+```bash
+bin/console sylius:import
+```
 
 - Import a file using the `tax_category` importer
 
-      $ bin/console sylius:import tax_category my/tax/categories/csv/file.csv --format=csv
+```bash
+bin/console sylius:import tax_category my/tax/categories/csv/file.csv --format=csv
+```
 
 - Import from message queue using the `country` importer
 
-      $ bin/console sylius:import-from-message-queue country
+```bash
+bin/console sylius:import-from-message-queue country
+```
 
 - To make the importer wait 1s for messages to get into the message queue (default, does not wait)
 
-      $ bin/console sylius:import-from-message-queue country --timeout=1000
+```bash
+bin/console sylius:import-from-message-queue country --timeout=1000
+```
 
 - Export data of resources to file using `country` exporter
 
-      $ bin/console sylius:export country my/countries/export/csv/file.csv --format=csv
+```bash
+bin/console sylius:export country my/countries/export/csv/file.csv --format=csv
+```
 
 - Export data of resources to message queue using `country` exporter
 
-      $ bin/console sylius:export-to-message-queue country
+```bash
+bin/console sylius:export-to-message-queue country
+```
 
 ## Development
 
@@ -302,7 +323,7 @@ MetadataValidatorInterface and injecting it in your FooProcessor instead of the 
 
 ### Defining new Exporters
 
-#### Notes
+#### NOTES
 
 - Replace `foo` with the name of the type you want to implement in the following examples.
 - Replace `bar` with the name of the format you want to implement in the following examples.
@@ -448,7 +469,7 @@ sylius.exporter.plugin.resource.country:
 
 The exporter will instantly be available as a exporter for the command line.
 
-    $ bin/console sylius:export country my/countries/export/csv/file.csv --format=csv
+    bin/console sylius:export country my/countries/export/csv/file.csv --format=csv
 
 Optional add the routing:
 
@@ -495,13 +516,15 @@ With the provided keys you can influence which fields of a resource are exported
 
 - Test application install
 
-      $ composer require sylius/sylius symfony/symfony
-      $ (cd tests/Application && yarn install)
-      $ (cd tests/Application && yarn run gulp)
-      $ (cd tests/Application && bin/console assets:install web -e test)
+```bash
+composer require sylius/sylius symfony/symfony
+(cd tests/Application && yarn install)
+(cd tests/Application && yarn run gulp)
+(cd tests/Application && bin/console assets:install web -e test)
 
-      $ (cd tests/Application && bin/console doctrine:database:create -e test)
-      $ (cd tests/Application && bin/console doctrine:schema:create -e test)
+(cd tests/Application && bin/console doctrine:database:create -e test)
+(cd tests/Application && bin/console doctrine:schema:create -e test)
+```
 
 - PHPUnit
 
@@ -535,14 +558,17 @@ With the provided keys you can influence which fields of a resource are exported
 
 - Using `test` environment:
 
-      $ (cd tests/Application && bin/console sylius:fixtures:load -e test)
-      $ (cd tests/Application && bin/console server:run -d web -e test)
+```bash
+(cd tests/Application && bin/console sylius:fixtures:load -e test)
+(cd tests/Application && bin/console server:run -d web -e test)
+```
 
 - Using `dev` environment:
 
-      $ (cd tests/Application && bin/console sylius:fixtures:load -e dev)
-      $ (cd tests/Application && bin/console server:run -d web -e dev)
+```bash
+(cd tests/Application && bin/console sylius:fixtures:load -e dev)
+(cd tests/Application && bin/console server:run -d web -e dev)
+```
 
 Fixture file with login information:
 https://github.com/Sylius/Sylius/blob/master/src/Sylius/Bundle/CoreBundle/Resources/config/app/fixtures.yml
-````
