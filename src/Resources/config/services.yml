@@ -4,7 +4,9 @@ services:
     class: FriendsOfSylius\SyliusImportExportPlugin\DependencyInjection\ParameterBag\ParameterBag
     arguments:
       - '@service_container'
-
+  app.form.type.vendor_import:
+    class: App\Form\VendorImportType
+    tags: ['form.type']
   # Controllers for Admin-Integration
   sylius.controller.import_data:
     public: true
@@ -230,8 +232,8 @@ services:
       - '@sylius.repository.channel_pricing'
       - '@sylius.repository.product_variant'
 
-  sylius.exporter.plugin.resource.product_options:
-    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\ProductOptionResourcePlugin
+  sylius.exporter.plugin.product_option_values:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\ProductOptionValuePlugin
     arguments:
       - '@sylius.repository.product_option'
       - '@property_accessor'
@@ -321,18 +323,6 @@ services:
         ]
       - '@sylius.service.attributes_code'
       - '@sylius.service.product_image_code'
-
-  sylius.exporter.pluginpool.product_options:
-    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\PluginPool
-    arguments:
-      - ['@sylius.exporter.plugin.resource.product_options']
-      - ['Code', 'Name', 'Position', 'Values']
-
-  sylius.exporter.pluginpool.product_attributes:
-    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\PluginPool
-    arguments:
-      - ['@sylius.exporter.plugin.resource.product_attributes']
-      - ['Code', 'Name', 'Type', 'Position', 'Translatable']
 
   sylius.exporter.plugin.resource.product_attributes:
     class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\ProductAttributeResourcePlugin
@@ -503,6 +493,7 @@ services:
     class: FriendsOfSylius\SyliusImportExportPlugin\Processor\ProductOptionProcessor
     arguments:
       - '@sylius.factory.product_option'
+      - '@sylius.factory.product_option_value'
       - '@sylius.repository.product_option'
       - '@sylius.importer.metadata_validator'
       - '@doctrine.orm.entity_manager'
@@ -534,3 +525,56 @@ services:
       - '@sylius.locale_provider'
       - '@sylius.importer.metadata_validator'
       - ['Code', 'Parent', 'Locale', 'Name', 'Slug', 'Description']
+
+  sylius.processor.vendors:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Processor\VendorProcessor
+    arguments:
+      - '@open_marketplace.factory.vendor'
+      - '@open_marketplace.repository.vendor'
+      - '@sylius.importer.metadata_validator'
+      - '@doctrine.orm.entity_manager'
+      - ['Id', 'Company_name', 'Tax_ID', 'Status', 'Enabled']
+      - '@sylius.importers_transformer_pool'
+
+  fos.sylius_import_export.controller.sample:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Controller\SampleController
+    public: true
+    arguments:
+      $samplesDir: '@=service("kernel").locateResource("@FOSSyliusImportExportPlugin")'
+
+  sylius.exporter.plugin.resource.product_options:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\ProductOptionResourcePlugin
+    arguments:
+      - '@sylius.repository.product_option'
+      - '@property_accessor'
+      - '@doctrine.orm.entity_manager'
+
+  sylius.exporter.pluginpool.product_options:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\PluginPool
+    arguments:
+      - ['@sylius.exporter.plugin.resource.product_options']
+      - [
+          'Code',
+          'Name',
+          'Position',
+          'Values_Code',
+          'Values_EN_US',
+          'Values_DE',
+          'Values_FR',
+          'Values_PL',
+          'Values_ES',
+          'Values_ES_MX',
+          'Values_PT',
+          'Values_ZH',
+        ]
+
+  sylius.exporter.pluginpool.product_attributes:
+    class: FriendsOfSylius\SyliusImportExportPlugin\Exporter\Plugin\PluginPool
+    arguments:
+      - ['@sylius.exporter.plugin.resource.product_attributes']
+      - ['Code', 'Name', 'Type', 'Position', 'Translatable']
+
+parameters:
+  sylius.importer.batch_size: 100
+  sylius.importer.fail_on_incomplete: false
+  sylius.importer.stop_on_failure: false

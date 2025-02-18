@@ -8,3 +8,8 @@ fos:
         csv: 'CSV'
         xlsx: 'Excel'
         json: 'JSON'
+
+sylius:
+  ui:
+    download_sample: 'Download Sample'
+    choose_file: 'Choose file'

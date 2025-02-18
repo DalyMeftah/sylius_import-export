@@ -84,3 +84,19 @@ app_export_data_vendor:
     _sylius:
       filterable: true
       grid: open_marketplace_admin_vendor
+
+app_import_data_vendor:
+  path: /admin/import/open_marketplace.vendor/{format}
+  methods: [GET, POST]
+  defaults:
+    resource: open_marketplace.vendor
+    _controller: sylius.controller.import_data::importAction
+    _sylius:
+      section: admin
+      permission: true
+
+app_download_sample:
+  path: /admin/import/sample/{type}
+  methods: [GET]
+  defaults:
+    _controller: fos.sylius_import_export.controller.sample::downloadAction

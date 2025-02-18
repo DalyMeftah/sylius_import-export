@@ -2,14 +2,30 @@
 
 {% block _import_import_data_row %}
     {% apply spaceless %}
-        <label for="{{ form.vars.id }}" class="ui icon labeled button">
-            <i class="cloud upload icon"></i> {{ 'sylius.ui.choose_file'|trans }}
-        </label>
-        <div class="ui hidden element">
-            {{ form_widget(form) }}
-        </div>
-        <div class="ui element">
-            {{- form_errors(form) -}}
+        <div class="ui grid">
+            <div class="row">
+                <div class="column">
+                    <label for="{{ form.vars.id }}" class="ui icon labeled button">
+                        <i class="cloud upload icon"></i> {{ 'sylius.ui.choose_file'|trans }}
+                    </label>
+                    {% if form.parent.children.format is defined %}
+                        {% set resource_type = app.request.attributes.get('resource')|split('.')|last %}
+                        <a href="{{ path('app_download_sample', {'type': resource_type}) }}" class="ui basic button">
+                            <i class="download icon"></i> {{ 'sylius.ui.download_sample'|trans }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <div class="ui hidden element">
+                        {{ form_widget(form) }}
+                    </div>
+                    <div class="ui element">
+                        {{- form_errors(form) -}}
+                    </div>
+                </div>
+            </div>
         </div>
     {% endapply %}
 {% endblock %}

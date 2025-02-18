@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FriendsOfSylius\SyliusImportExportPlugin\Processor;
 
+use FriendsOfSylius\SyliusImportExportPlugin\Exception\ImporterException;
 use Sylius\Component\Product\Model\ProductAttributeInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
@@ -42,15 +43,12 @@ final class ProductAttributeProcessor implements ResourceProcessorInterface
 
     public function process(array $data): void
     {
-
         $normalizedData = [];
         foreach ($data as $key => $value) {
             if (strpos($key, ';') !== false) {
-
                 $keys = explode(';', $key);
                 $values = explode(';', $value);
                 
-
                 foreach ($keys as $index => $headerKey) {
                     if (isset($values[$index])) {
                         $normalizedData[trim($headerKey)] = trim($values[$index]);
@@ -64,18 +62,22 @@ final class ProductAttributeProcessor implements ResourceProcessorInterface
 
         $this->metadataValidator->validateHeaders($this->headerKeys, $normalizedData);
 
-
-        $productAttribute = $this->productAttributeRepository->findOneBy(['code' => $normalizedData['Code']]);
+        // Check if product attribute already exists
+        $existingAttribute = $this->productAttributeRepository->findOneBy(['code' => $normalizedData['Code']]);
         
-        if (null === $productAttribute) {
-            $productAttribute = $this->productAttributeFactory->createNew();
-            $productAttribute->setCode($normalizedData['Code']);
+        if ($existingAttribute !== null) {
+            throw new ImporterException(
+                sprintf('Product attribute with code "%s" already exists.', $normalizedData['Code'])
+            );
         }
+
+        /** @var ProductAttributeInterface $productAttribute */
+        $productAttribute = $this->productAttributeFactory->createNew();
+        $productAttribute->setCode($normalizedData['Code']);
 
         $type = strtolower($normalizedData['Type']);
         $productAttribute->setType($type);
         
-     
         $storageType = $this->typeToStorage[$type] ?? 'text';
         $productAttribute->setStorageType($storageType);
 
@@ -84,7 +86,6 @@ final class ProductAttributeProcessor implements ResourceProcessorInterface
         if (isset($normalizedData['Position'])) {
             $productAttribute->setPosition((int) $normalizedData['Position']);
         }
-
 
         $productAttribute->setTranslatable(true);
 

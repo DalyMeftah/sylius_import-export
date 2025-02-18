@@ -108,7 +108,20 @@ services:
     arguments:
       - '@sylius.exporter.csv_writer'
       - '@sylius.exporter.pluginpool.product_options'
-      - ['Code', 'Name', 'Position', 'Values']
+      - [
+          'Code',
+          'Name',
+          'Position',
+          'Values_Code',
+          'Values_EN_US',
+          'Values_DE',
+          'Values_FR',
+          'Values_PL',
+          'Values_ES',
+          'Values_ES_MX',
+          'Values_PT',
+          'Values_ZH',
+        ]
       - '@sylius.exporters_transformer_pool'
     tags:
       - { name: sylius.exporter, type: sylius.product_option, format: csv }
