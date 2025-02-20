@@ -55,7 +55,20 @@ final class SampleController
             'product_option' => [
                 'Code', 'Name', 'Position', 'Values_Code', 'Values_EN_US', 'Values_DE', 'Values_FR', 'Values_PL', 'Values_ES', 'Values_ES_MX', 'Values_PT', 'Values_ZH'
             ],
-            'vendor' => ['Id', 'Company_name', 'Tax_ID', 'Status', 'Enabled'],
+            'vendor' => [
+                'Id', 
+                'Company_name', 
+                'Tax_ID', 
+                'Bank_Account', 
+                'Phone_Number',
+                'Description',
+                'Country',
+                'City',
+                'Street',
+                'Postal_Code',
+                'Status',
+                'Enabled'
+            ],
             'taxonomy' => ['Code', 'Parent', 'Name', 'Slug', 'Description', 'Position', 'Locale'],
             default => throw new NotFoundHttpException(sprintf('Sample type "%s" not supported', $type))
         };
@@ -109,8 +122,34 @@ final class SampleController
                 ]
             ],
             'vendor' => [
-                ['1', 'madrid', '810302810302', 'verified', 'Yes'],
-                ['2', 'barcelona', '810302810303', 'unverified', 'No']
+                [
+                    '1',
+                    'Madrid Company',
+                    '810302810302',
+                    'ES91 2100 0418 4502 0005 1332',
+                    '+34 123 456 789',
+                    'A trusted vendor from Madrid',
+                    'ES',
+                    'Madrid',
+                    'Gran Via 123',
+                    '28013',
+                    'verified',
+                    'Yes'
+                ],
+                [
+                    '2',
+                    'Barcelona Company',
+                    '810302810303',
+                    'ES91 2100 0418 4502 0005 1333',
+                    '+34 987 654 321',
+                    'Quality products from Barcelona',
+                    'ES',
+                    'Barcelona',
+                    'Las Ramblas 456',
+                    '08002',
+                    'unverified',
+                    'No'
+                ]
             ],
             'taxonomy' => [
                 ['CATEGORY_1', '', 'Main Category', 'main-category', 'Description', '0', 'en_US'],

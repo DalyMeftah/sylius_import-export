@@ -40,7 +40,7 @@ return [
 sylius_grid:
   templates:
     action:
-      export: '@SyliusAdmin/Grid/Action/export.html.twig'
+      import: '@SyliusAdmin/Grid/Action/import.html.twig'
   grids:
     open_marketplace_admin_vendor:
       driver:
@@ -75,27 +75,51 @@ sylius_grid:
             template: 'Configuration/Grid/Admin/Field/enabled.html.twig'
       actions:
         main:
-          export:
-            type: export
-            label: sylius.ui.export
+          import:
+            type: import
+            label: sylius.ui.import
             options:
               link:
-                route: app_export_data_vendor
+                route: app_import_form_vendor
                 parameters:
                   format: csv
 ```
 
-### try to create templates/bundles/SyliusAdminBundle/Grid/Action/export.html.twig
+### try to create templates/bundles/SyliusAdminBundle/Grid/Action/import.html.twig
 
 ```twig
-{% import '@SyliusUi/Macro/buttons.html.twig' as buttons %}
+{{ render(controller('sylius.controller.import_data::importFormAction', {'resource': 'open_marketplace.vendor'})) }}
 
-{% if options.link.route is defined %}
-    {% set path = options.link.route %}
-    {% set parameters = options.link.parameters|default({}) %}
+<div class="ui basic segment">
+    <div class="ui buttons">
+        <a class="ui basic blue button" href="{{ path('app_export_data_vendor', {'format': 'csv'}) }}">
+            <i class="file excel icon"></i>
+            {{ 'export'|trans }}
+        </a>
+    </div>
+</div>
+```
 
-    {{ buttons.default(path(path, parameters), action.label, null, 'download', 'blue') }}
+### templates/bundles/SyliusAdminBundle/Grid/Action/\_content.html.twig
+
+```twig
+{% if definition.enabledGridActions.main is defined %}
+    <div class="ui segment">
+        {% for action in definition.enabledGridActions.main %}
+            {{ sylius_grid_render_action(grid, action, null) }}
+        {% endfor %}
+    </div>
 {% endif %}
+
+{% if definition.enabledGridActions.bulk is defined %}
+    <div class="ui segment">
+        {% for action in definition.enabledGridActions.bulk %}
+            {{ sylius_grid_render_bulk_action(grid, action, null) }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+{{ sylius_grid_render(grid) }}
 ```
 
 ```yaml

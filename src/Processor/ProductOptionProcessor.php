@@ -19,7 +19,7 @@ final class ProductOptionProcessor implements ResourceProcessorInterface
     private MetadataValidatorInterface $metadataValidator;
     private EntityManagerInterface $entityManager;
     private array $headerKeys = [
-        'Code', 'Name', 'Position', 
+        'Code', 'Position', 
         'Values_Code', 'Values_EN_US', 'Values_DE', 'Values_FR', 
         'Values_PL', 'Values_ES', 'Values_ES_MX', 'Values_PT', 'Values_ZH'
     ];
@@ -51,11 +51,9 @@ final class ProductOptionProcessor implements ResourceProcessorInterface
 
     public function process(array $data): void
     {
-        // Add normalization logic for semicolon-delimited data
         $normalizedData = [];
         $hasDelimiter = false;
         
-        // Check if we have semicolon-delimited headers
         foreach ($data as $key => $value) {
             if (strpos($key, ';') !== false) {
                 $hasDelimiter = true;
@@ -64,7 +62,6 @@ final class ProductOptionProcessor implements ResourceProcessorInterface
         }
 
         if ($hasDelimiter) {
-            // Handle semicolon-delimited data
             $keys = explode(';', array_key_first($data));
             $values = explode(';', reset($data));
             
@@ -74,14 +71,13 @@ final class ProductOptionProcessor implements ResourceProcessorInterface
                 }
             }
         } else {
-            // Handle regular comma-delimited data
             $normalizedData = $data;
         }
 
-        // Use normalized data instead of original data
         $this->metadataValidator->validateHeaders($this->headerKeys, $normalizedData);
 
-        // Check if product option already exists
+        $this->validateRequiredFields($normalizedData);
+
         /** @var ProductOptionInterface $existingProductOption */
         $existingProductOption = $this->productOptionRepository->findOneBy(['code' => $normalizedData['Code']]);
         
@@ -91,16 +87,42 @@ final class ProductOptionProcessor implements ResourceProcessorInterface
             );
         }
 
-        /** @var ProductOptionInterface $productOption */
-        $productOption = $this->productOptionFactory->createNew();
-        $productOption->setCode($normalizedData['Code']);
-        $productOption->setName($normalizedData['Name']);
-        $productOption->setPosition((int) $normalizedData['Position']);
+        if (empty($normalizedData['Values_Code'])) {
+            throw new ImporterException('Values_Code is required and cannot be empty.');
+        }
+
+        if (empty($normalizedData['Values_EN_US'])) {
+            throw new ImporterException('English (United States) values are required and cannot be empty.');
+        }
 
         // Process values
         $valuesCode = explode('*****NEXT_VALUE:*****', trim($normalizedData['Values_Code'], '*****VALUE1:*****'));
         
-        // Create a map to store created option values
+        foreach ($valuesCode as $code) {
+            $existingValue = $this->entityManager
+                ->createQuery('
+                    SELECT pov 
+                    FROM Sylius\Component\Product\Model\ProductOptionValue pov 
+                    WHERE pov.code LIKE :code
+                ')
+                ->setParameter('code', '%_' . $code)
+                ->getResult();
+
+            if (!empty($existingValue)) {
+                throw new ImporterException(
+                    sprintf('Product option value code "%s" already exists in another product option.', $code)
+                );
+            }
+        }
+
+        /** @var ProductOptionInterface $productOption */
+        $productOption = $this->productOptionFactory->createNew();
+        $productOption->setCode($normalizedData['Code']);
+        if (isset($normalizedData['Name']) && !empty($normalizedData['Name'])) {
+            $productOption->setName($normalizedData['Name']);
+        }
+        $productOption->setPosition((int) ($normalizedData['Position'] ?? 0));
+
         $createdValues = [];
 
         foreach ($valuesCode as $key => $code) {
@@ -112,7 +134,6 @@ final class ProductOptionProcessor implements ResourceProcessorInterface
             $createdValues[$key] = $productOptionValue;
         }
 
-        // Set translations for each value
         foreach ($this->locales as $header => $locale) {
             if (isset($normalizedData[$header])) {
                 $values = explode('*****NEXT_VALUE:*****', trim($normalizedData[$header], '*****VALUE1:*****'));
@@ -152,17 +173,30 @@ final class ProductOptionProcessor implements ResourceProcessorInterface
 
     private function findOrCreateOptionValue(ProductOptionInterface $productOption, string $code): ProductOptionValueInterface
     {
-        // Check existing values first
         foreach ($productOption->getValues() as $existingValue) {
             if ($existingValue->getCode() === $code) {
                 return $existingValue;
             }
         }
 
-        // If no existing value found, create new one
         /** @var ProductOptionValueInterface $optionValue */
         $optionValue = $this->productOptionValueFactory->createNew();
         $productOption->addValue($optionValue);
         return $optionValue;
+    }
+
+    private function validateRequiredFields(array $data): void
+    {
+        $requiredFields = [
+            'Code' => 'Code is required.',
+            'Values_Code' => 'Values_Code is required.',
+            'Values_EN_US' => 'English (United States) values are required.'
+        ];
+
+        foreach ($requiredFields as $field => $message) {
+            if (!isset($data[$field]) || trim($data[$field]) === '') {
+                throw new ImporterException($message);
+            }
+        }
     }
 }

@@ -62,7 +62,7 @@ final class ProductAttributeProcessor implements ResourceProcessorInterface
 
         $this->metadataValidator->validateHeaders($this->headerKeys, $normalizedData);
 
-        // Check if product attribute already exists
+
         $existingAttribute = $this->productAttributeRepository->findOneBy(['code' => $normalizedData['Code']]);
         
         if ($existingAttribute !== null) {
@@ -81,7 +81,9 @@ final class ProductAttributeProcessor implements ResourceProcessorInterface
         $storageType = $this->typeToStorage[$type] ?? 'text';
         $productAttribute->setStorageType($storageType);
 
-        $productAttribute->getTranslation('en_US')->setName($normalizedData['Name']);
+        if (isset($normalizedData['Name']) && !empty($normalizedData['Name'])) {
+            $productAttribute->getTranslation('en_US')->setName($normalizedData['Name']);
+        }
         
         if (isset($normalizedData['Position'])) {
             $productAttribute->setPosition((int) $normalizedData['Position']);

@@ -94,7 +94,6 @@ app_import_data_vendor:
     _sylius:
       section: admin
       permission: true
-
 app_download_sample:
   path: /admin/import/sample/{type}
   methods: [GET]
