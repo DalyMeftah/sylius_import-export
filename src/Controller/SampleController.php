@@ -26,7 +26,8 @@ final class SampleController
         fputcsv($output, $headers);
         
         foreach ($sampleData as $row) {
-            fputcsv($output, $row);
+            $completeRow = array_pad($row, count($headers), '');
+            fputcsv($output, $completeRow);
         }
         
         rewind($output);
@@ -44,13 +45,50 @@ final class SampleController
     {
         return match($type) {
             'product' => [
-                'Code', 'Name', 'Slug', 'Short_description', 'Description',
-                'Meta_keywords', 'Meta_description', 'Main_taxon', 'Taxons',
-                'Variant_selection_method', 'Product_options', 'Variant_codes',
-                'Variant_names', 'Variant_prices', 'Channels', 'Enabled', 'Images'
+                'Code',
+                'Name',
+                'Locale',
+                'Enabled',
+                'Description',
+                'Short_description',
+                'Meta_keywords',
+                'Meta_description',
+                'Main_taxon',
+                'Taxons',
+                'Channels',
+                'Price',
+                'image_main',
+                'image_thumbnail',
+                't_shirt_brand',
+                't_shirt_collection',
+                't_shirt_material',
+                'cap_brand',
+                'cap_collection',
+                'cap_material',
+                'dress_brand',
+                'dress_collection',
+                'dress_material',
+                'length',
+                'jeans_brand',
+                'jeans_collection',
+                'jeans_material',
+                'damage_reduction',
+                'dfsfdfdqfqd',
+                'DALISTA',
+                'Lm',
+                'Sd',
+                're',
+                'Images_main',
+                'COLOR',
+                'SIZE',
+                'MATERIAL'
             ],
             'product_attribute' => [
-                'Code', 'Name', 'Type', 'Position', 'Translatable'
+                'Code',
+                'Name',
+                'Type',
+                'Position',
+                'Translatable'
             ],
             'product_option' => [
                 'Code', 'Name', 'Position', 'Values_Code', 'Values_EN_US', 'Values_DE', 'Values_FR', 'Values_PL', 'Values_ES', 'Values_ES_MX', 'Values_PT', 'Values_ZH'
@@ -79,17 +117,51 @@ final class SampleController
         return match($type) {
             'product' => [
                 [
-                    'TSHIRT_COOL', 'Cool T-Shirt', 'cool-t-shirt', 'A cool t-shirt',
-                    'Detailed description', 't-shirt;cool', 'Meta description',
-                    't-shirts', 't-shirts;men', 'options', 'size;color',
-                    'TSHIRT_S', 'TSHIRT_M', 'T-Shirt S;T-Shirt M', '19.99;24.99',
-                    'WEB_US', 'true', 'http://example.com/tshirt.jpg',
+                    'TSHIRT_COOL',
+                    'Cool T-Shirt',
+                    'en_US',
+                    '1',
+                    'Detailed description',
+                    'A cool t-shirt',
+                    't-shirt,cool',
+                    'Meta description',
+                    'CATEGORY_TSHIRTS',
+                    'CATEGORY_TSHIRTS|CATEGORY_MEN',
+                    'CHANNEL_WEB|CHANNEL_RETAIL',
+                    '1999',
+                    '/path/to/main.jpg',
+                    '/path/to/thumbnail.jpg',
+                    'Nike',
+                    'Summer 2024',
+                    'Cotton',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    'Blue',
+                    'L',
+                    '100% Cotton'
                 ]
             ],
             'product_attribute' => [
-                ['COLOR', 'Color', 'select', '1', 'Yes'],
-                ['SIZE', 'Size', 'select', '2', 'Yes'],
-                ['MATERIAL', 'Material', 'text', '3', 'Yes']
+                ['t_shirt_brand', 'T-Shirt Brand', 'text', '1', 'Yes'],
+                ['t_shirt_collection', 'T-Shirt Collection', 'text', '2', 'Yes'],
+                ['t_shirt_material', 'T-Shirt Material', 'text', '3', 'Yes'],
+                ['COLOR', 'Color', 'select', '4', 'Yes'],
+                ['SIZE', 'Size', 'select', '5', 'Yes'],
+                ['MATERIAL', 'Material', 'text', '6', 'Yes']
             ],
             'product_option' => [
                 [
